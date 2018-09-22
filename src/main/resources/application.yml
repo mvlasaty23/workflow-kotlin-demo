@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: workflow-kotlin-demo
+  main:
+    banner-mode: "off"
+  jpa:
+    database: default
+    show-sql: true
+  dao:
+    exceptiontranslation:
+      enabled: true
+  datasource:
+    username: admin
+    password: admin
+    url: jdbc:h2:mem:demodb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;Mode=PostgreSql
+  h2:
+    console:
+      enabled: true
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+      indent-output: true
+camunda:
+  bpm:
+    #bugfix, jpaVariableSerializer throws nasty bug when sending json objects from forms
+    jpa:
+      enabled: false
+    history-level: full
+    metrics:
+      enabled: true
+    webapp:
+      index-redirect-enabled: true
+    default-serialization-format: application/json

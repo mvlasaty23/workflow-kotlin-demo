@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:camunda="http://camunda.org/schema/1.0/dmn" id="definitions_0hjv2z2" name="definitions" namespace="http://camunda.org/schema/1.0/dmn">
+  <decision id="oderApprovalDecision" name="Order approval decision">
+    <decisionTable id="decisionTable" hitPolicy="FIRST">
+      <input id="input1" label="isIntern" camunda:inputVariable="isIntern">
+        <inputExpression id="inputExpression1" typeRef="boolean">
+          <text></text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_0sa72lo" label="amount" camunda:inputVariable="amount">
+        <inputExpression id="LiteralExpression_0hj8jfy" typeRef="double">
+          <text></text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_0a59vi8" label="country" camunda:inputVariable="country">
+        <inputExpression id="LiteralExpression_1l0imtm" typeRef="string">
+          <text></text>
+        </inputExpression>
+      </input>
+      <output id="output1" label="approvalRequired" name="approvalRequired" typeRef="boolean" />
+      <output id="OutputClause_1ioegan" label="responsibleDepartment" name="responsibleDepartment" typeRef="string" />
+      <rule id="row-34434499-1">
+        <description>Internal orders less or equals 500 can be confirmed automatically</description>
+        <inputEntry id="UnaryTests_0j363fm">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1o517st">
+          <text><![CDATA[<= 500]]></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0yeglvq">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0ji9vlo">
+          <text>false</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_11xuypw">
+          <text></text>
+        </outputEntry>
+      </rule>
+      <rule id="row-34434499-2">
+        <description>Internal orders greater than 500 have to be approved by a department lead</description>
+        <inputEntry id="UnaryTests_0c0mvp6">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1pz46jq">
+          <text><![CDATA[> 500]]></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1kuwnwl">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0lgc9zu">
+          <text>true</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0h7v1nt">
+          <text></text>
+        </outputEntry>
+      </rule>
+      <rule id="row-34434499-3">
+        <description>Any external order less than 5000 has to be approved by the local accounting staff</description>
+        <inputEntry id="UnaryTests_11l3fz8">
+          <text>false</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0ro2sqj">
+          <text><![CDATA[<= 5000]]></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1kv6txx">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1t73e06">
+          <text>true</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1n8bw12">
+          <text><![CDATA["ACC"]]></text>
+        </outputEntry>
+      </rule>
+      <rule id="row-34434499-4">
+        <description>AT and CZ external orders have a higher threshold as accounting groups are in HQ</description>
+        <inputEntry id="UnaryTests_1s3npf5">
+          <text>false</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1i93zt7">
+          <text><![CDATA[<= 6000]]></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_169t70v">
+          <text><![CDATA["AT", "CZ"]]></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_029crqg">
+          <text>true</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0yphify">
+          <text><![CDATA["ACC"]]></text>
+        </outputEntry>
+      </rule>
+      <rule id="row-34434499-5">
+        <description>External orders higher than 5000 have to be approved by a manager</description>
+        <inputEntry id="UnaryTests_04kqby9">
+          <text>false</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0rfaxb7">
+          <text><![CDATA[> 5000]]></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1o6ly7y">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1ynod31">
+          <text>true</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1o3sbkp">
+          <text><![CDATA["MGMT"]]></text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>

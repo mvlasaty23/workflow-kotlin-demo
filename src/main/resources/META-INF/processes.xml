@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<process-application
+  xmlns="http://www.camunda.org/schema/1.0/ProcessApplication"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   
+  <process-archive>
+    <process-engine>default</process-engine>
+    <resource>bpmn/order/approval.dmn</resource>
+    <resource>bpmn/order/approval_dmn.bpmn</resource>
+    <properties>
+      <property name="isScanForProcessDefinitions">false</property>
+      <property name="defaultSerializationFormat">application/json</property>
+      <property name="javaSerializationFormatEnable">false</property>
+    </properties>
+  </process-archive>
+
+</process-application>
