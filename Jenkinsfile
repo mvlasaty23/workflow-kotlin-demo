@@ -8,10 +8,13 @@ pipeline {
           image 'maven:3-jdk-8'
           reuseNode true
           // TODO: add cache local dir for maven
+          args '-v /tmp/.m2:/.m2'
         }
       }
       steps {
-        sh("mvn clean install")
+      	configFileProvider([configFile(fileId: 'defaultSettings', targetLocation: './settings.xml')]) {
+          sh("mvn clean install -s ./settings.xml")
+        }
         fingerprint 'target/*.jar'
         archiveArtifacts artifacts: 'target/*.jar', onlyIfSuccessful: true
       }
