@@ -11,8 +11,8 @@ pipeline {
       }
       steps {
         sh("mvn clean install")
-        fingerprint 'target/*.war'
-        archiveArtifacts artifacts: 'target/*.war', onlyIfSuccessful: true
+        fingerprint 'target/*.jar'
+        archiveArtifacts artifacts: 'target/*.jar', onlyIfSuccessful: true
       }
       post {
       	always {
