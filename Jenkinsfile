@@ -11,7 +11,7 @@ pipeline {
         }
       }
       steps {
-      	configFileProvider([configFile(fileId: 'defaultSettings', targetLocation: './settings.xml')]) {
+      	configFileProvider([configFile(fileId: 'default_settings', targetLocation: './settings.xml')]) {
           sh("mvn clean install -s ./settings.xml")
         }
         fingerprint 'target/*.jar'
