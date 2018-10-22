@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:camunda="http://camunda.org/schema/1.0/dmn" id="definitions_1u8feac" name="definitions" namespace="http://camunda.org/schema/1.0/dmn">
+  <decision id="orderDevicedecision" name="Order Device Decision">
+    <decisionTable id="decisionTable" hitPolicy="FIRST">
+      <input id="input1" label="Department" camunda:inputVariable="department">
+        <inputExpression id="inputExpression1" typeRef="string">
+          <text></text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_1jj2h1h" label="Amount" camunda:inputVariable="amount">
+        <inputExpression id="LiteralExpression_1iwatza" typeRef="double">
+          <text></text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_1g1i7hm" label="Off the shelf" camunda:inputVariable="offTheShelf">
+        <inputExpression id="LiteralExpression_1w37ym8" typeRef="boolean">
+          <text></text>
+        </inputExpression>
+      </input>
+      <output id="output1" label="Management Review" name="managmentRequired" typeRef="boolean" />
+      <output id="OutputClause_16c9qy7" label="IT Review" name="itRequired" typeRef="boolean" />
+      <rule id="row-205860911-1">
+        <description><![CDATA[Sales&Marketing and Management]]></description>
+        <inputEntry id="UnaryTests_043xkp7">
+          <text><![CDATA["SM", "MM"]]></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1o950vg">
+          <text>]0..600]</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1r7elt1">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1u4n22a">
+          <text>false</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_02bmb43">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+      <rule id="row-205860911-7">
+        <inputEntry id="UnaryTests_0d7jxar">
+          <text><![CDATA["SM", "MM"]]></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_16r9p2i">
+          <text>]0..120]</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1tx0jmq">
+          <text>false</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_16lox85">
+          <text>false</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1asgayq">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+      <rule id="row-205860911-2">
+        <description><![CDATA[Research&Development and Consulting]]></description>
+        <inputEntry id="UnaryTests_1kle2gb">
+          <text><![CDATA["RD", "CS"]]></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_03va9fo">
+          <text>]0..120]</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1xf8gve">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_01dw9o9">
+          <text>false</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_13qfqe7">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+      <rule id="row-205860911-4">
+        <inputEntry id="UnaryTests_10bxaer">
+          <text><![CDATA["RD", "CS"]]></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0buy7pz">
+          <text>]0..50]</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1cqp75z">
+          <text>false</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0w9gnta">
+          <text>false</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0qsh1mx">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+      <rule id="row-205860911-3">
+        <description>Human Resources and Costumer Aquisition</description>
+        <inputEntry id="UnaryTests_11uf2eq">
+          <text><![CDATA["HR", "CA"]]></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_045t5tu">
+          <text>]0..60]</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1b6marp">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0f0cps7">
+          <text>false</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1wmuuod">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+      <rule id="row-205860911-5">
+        <inputEntry id="UnaryTests_0xn2sgd">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0fb6c8v">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0f36i31">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1vjy9yk">
+          <text>true</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1jjo4my">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+      <rule id="row-205860911-6">
+        <inputEntry id="UnaryTests_0lmixoc">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1js1f9z">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0xsa5in">
+          <text>false</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1xfdlrk">
+          <text>false</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1ak7jds">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>

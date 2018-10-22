@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="1.11.3">
+  <bpmn:collaboration id="Collaboration_1j59dkf">
+    <bpmn:participant id="Participant_123ss71" name="Device Application" processRef="Process_1" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_1" isExecutable="true">
+    <bpmn:laneSet>
+      <bpmn:lane id="Lane_1b59bu3" name="System">
+        <bpmn:flowNodeRef>Task_ReceiveShippingConfirmation</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ExtractMetadata</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_CreateOrder</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_SanityCheck</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ExclusiveGateway_CanOrder</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ExclusiveGateway_OffTheShelf</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>BoundaryEvent_ShippingError</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_128sw47" name="IT Staff">
+        <bpmn:flowNodeRef>UserTask_ITReview</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UserTask_ConfirmDelivery</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_Delivered</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_Rejected</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ExclusiveGateway_ManualApproval</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_0oibk4n" name="Manager">
+        <bpmn:flowNodeRef>UserTask_ManagementReview</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>SequenceFlow_1qci2l7</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:exclusiveGateway id="ExclusiveGateway_CanOrder" name="Can order?">
+      <bpmn:incoming>SequenceFlow_0u11rq2</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_CheckCategory</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_AssignManager</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="ExclusiveGateway_OffTheShelf" name="Off the shelf order?">
+      <bpmn:incoming>SequenceFlow_CheckCategory</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_AssignITStaff</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_AutomaticOrder</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="ExclusiveGateway_ManualApproval" name="Is approved?">
+      <bpmn:incoming>SequenceFlow_ITReviewDone</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_ManagerReviewDone</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_ManualReject</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_ManualOrder</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:receiveTask id="Task_ReceiveShippingConfirmation" name="Receive shipping confirmation">
+      <bpmn:incoming>SequenceFlow_OrderCreated</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_ShippingReceived</bpmn:outgoing>
+    </bpmn:receiveTask>
+    <bpmn:endEvent id="EndEvent_Delivered" name="Delivered">
+      <bpmn:incoming>SequenceFlow_OrderDelivered</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="Task_ExtractMetadata" name="Extract metadata">
+      <bpmn:incoming>SequenceFlow_1qci2l7</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_12gf2qw</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="UserTask_ManagementReview" name="Review order">
+      <bpmn:incoming>SequenceFlow_AssignManager</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_ManagerReviewDone</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="UserTask_ITReview" name="Review order">
+      <bpmn:incoming>SequenceFlow_AssignITStaff</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_ITReviewDone</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="UserTask_ConfirmDelivery" name="Confirm delivery">
+      <bpmn:incoming>SequenceFlow_ShippingReceived</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_OrderDelivered</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="EndEvent_Rejected" name="Rejected">
+      <bpmn:incoming>SequenceFlow_ManualReject</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_AutomaticReject</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sendTask id="Task_CreateOrder" name="Create order">
+      <bpmn:incoming>SequenceFlow_AutomaticOrder</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_ManualOrder</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_OrderCreated</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:businessRuleTask id="Task_SanityCheck" name="Sanity check">
+      <bpmn:incoming>SequenceFlow_12gf2qw</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0u11rq2</bpmn:outgoing>
+    </bpmn:businessRuleTask>
+    <bpmn:boundaryEvent id="BoundaryEvent_ShippingError" attachedToRef="Task_ReceiveShippingConfirmation">
+      <bpmn:outgoing>SequenceFlow_AutomaticReject</bpmn:outgoing>
+      <bpmn:errorEventDefinition />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_1qci2l7" sourceRef="StartEvent_1" targetRef="Task_ExtractMetadata" />
+    <bpmn:sequenceFlow id="SequenceFlow_0u11rq2" sourceRef="Task_SanityCheck" targetRef="ExclusiveGateway_CanOrder" />
+    <bpmn:sequenceFlow id="SequenceFlow_CheckCategory" sourceRef="ExclusiveGateway_CanOrder" targetRef="ExclusiveGateway_OffTheShelf" />
+    <bpmn:sequenceFlow id="SequenceFlow_AssignManager" sourceRef="ExclusiveGateway_CanOrder" targetRef="UserTask_ManagementReview" />
+    <bpmn:sequenceFlow id="SequenceFlow_AssignITStaff" sourceRef="ExclusiveGateway_OffTheShelf" targetRef="UserTask_ITReview" />
+    <bpmn:sequenceFlow id="SequenceFlow_AutomaticOrder" sourceRef="ExclusiveGateway_OffTheShelf" targetRef="Task_CreateOrder" />
+    <bpmn:sequenceFlow id="SequenceFlow_ManagerReviewDone" sourceRef="UserTask_ManagementReview" targetRef="ExclusiveGateway_ManualApproval" />
+    <bpmn:sequenceFlow id="SequenceFlow_ITReviewDone" sourceRef="UserTask_ITReview" targetRef="ExclusiveGateway_ManualApproval" />
+    <bpmn:sequenceFlow id="SequenceFlow_ManualReject" name="No" sourceRef="ExclusiveGateway_ManualApproval" targetRef="EndEvent_Rejected" />
+    <bpmn:sequenceFlow id="SequenceFlow_ManualOrder" name="Yes" sourceRef="ExclusiveGateway_ManualApproval" targetRef="Task_CreateOrder" />
+    <bpmn:sequenceFlow id="SequenceFlow_OrderCreated" sourceRef="Task_CreateOrder" targetRef="Task_ReceiveShippingConfirmation" />
+    <bpmn:sequenceFlow id="SequenceFlow_ShippingReceived" sourceRef="Task_ReceiveShippingConfirmation" targetRef="UserTask_ConfirmDelivery" />
+    <bpmn:sequenceFlow id="SequenceFlow_OrderDelivered" sourceRef="UserTask_ConfirmDelivery" targetRef="EndEvent_Delivered" />
+    <bpmn:sequenceFlow id="SequenceFlow_12gf2qw" sourceRef="Task_ExtractMetadata" targetRef="Task_SanityCheck" />
+    <bpmn:sequenceFlow id="SequenceFlow_AutomaticReject" sourceRef="BoundaryEvent_ShippingError" targetRef="EndEvent_Rejected" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1j59dkf">
+      <bpmndi:BPMNShape id="Participant_123ss71_di" bpmnElement="Participant_123ss71">
+        <dc:Bounds x="30" y="33" width="1252" height="433" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="105" y="89" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="78" y="125" width="90" height="20" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1b59bu3_di" bpmnElement="Lane_1b59bu3">
+        <dc:Bounds x="60" y="33" width="1222" height="197" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_128sw47_di" bpmnElement="Lane_128sw47">
+        <dc:Bounds x="60" y="230" width="1222" height="122" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1qci2l7_di" bpmnElement="SequenceFlow_1qci2l7">
+        <di:waypoint xsi:type="dc:Point" x="141" y="107" />
+        <di:waypoint xsi:type="dc:Point" x="174" y="107" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="112.5" y="85.5" width="90" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_12gf2qw_di" bpmnElement="SequenceFlow_12gf2qw">
+        <di:waypoint xsi:type="dc:Point" x="274" y="107" />
+        <di:waypoint xsi:type="dc:Point" x="332" y="107" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="258" y="85.5" width="90" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0u11rq2_di" bpmnElement="SequenceFlow_0u11rq2">
+        <di:waypoint xsi:type="dc:Point" x="432" y="107" />
+        <di:waypoint xsi:type="dc:Point" x="471" y="107" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="406.5" y="85.5" width="90" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ExclusiveGateway_04kttqn_di" bpmnElement="ExclusiveGateway_CanOrder" isMarkerVisible="true">
+        <dc:Bounds x="471" y="82" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="468" y="61" width="56" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0keztqf_di" bpmnElement="SequenceFlow_CheckCategory">
+        <di:waypoint xsi:type="dc:Point" x="521" y="107" />
+        <di:waypoint xsi:type="dc:Point" x="575" y="107" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="503" y="86" width="90" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Lane_0oibk4n_di" bpmnElement="Lane_0oibk4n">
+        <dc:Bounds x="60" y="352" width="1222" height="114" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1ubd88c_di" bpmnElement="SequenceFlow_AssignManager">
+        <di:waypoint xsi:type="dc:Point" x="496" y="132" />
+        <di:waypoint xsi:type="dc:Point" x="496" y="366" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="466" y="242.5" width="90" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ExclusiveGateway_1u49hw5_di" bpmnElement="ExclusiveGateway_OffTheShelf" isMarkerVisible="true">
+        <dc:Bounds x="575" y="82" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="569" y="53" width="61" height="25" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0qljzmj_di" bpmnElement="SequenceFlow_AssignITStaff">
+        <di:waypoint xsi:type="dc:Point" x="600" y="132" />
+        <di:waypoint xsi:type="dc:Point" x="600" y="190" />
+        <di:waypoint xsi:type="dc:Point" x="600" y="190" />
+        <di:waypoint xsi:type="dc:Point" x="600" y="248" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="570" y="183.5" width="90" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ExclusiveGateway_0uav17b_di" bpmnElement="ExclusiveGateway_ManualApproval" isMarkerVisible="true">
+        <dc:Bounds x="701" y="263" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="744" y="300" width="64" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_12ud03e_di" bpmnElement="SequenceFlow_ITReviewDone">
+        <di:waypoint xsi:type="dc:Point" x="650" y="288" />
+        <di:waypoint xsi:type="dc:Point" x="701" y="288" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="630.5" y="266.5" width="90" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0gogwhx_di" bpmnElement="SequenceFlow_ManagerReviewDone">
+        <di:waypoint xsi:type="dc:Point" x="546" y="406" />
+        <di:waypoint xsi:type="dc:Point" x="726" y="406" />
+        <di:waypoint xsi:type="dc:Point" x="726" y="313" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="591" y="384.5" width="90" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_0wrfiaj_di" bpmnElement="EndEvent_Rejected">
+        <dc:Bounds x="882" y="270" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="878" y="309" width="44" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_15ojbxu_di" bpmnElement="SequenceFlow_ManualReject">
+        <di:waypoint xsi:type="dc:Point" x="751" y="288" />
+        <di:waypoint xsi:type="dc:Point" x="882" y="288" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="753" y="271" width="15" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_18jyl3p_di" bpmnElement="SequenceFlow_OrderCreated">
+        <di:waypoint xsi:type="dc:Point" x="776" y="107" />
+        <di:waypoint xsi:type="dc:Point" x="850" y="107" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="768" y="85.5" width="90" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ReceiveTask_18xbv55_di" bpmnElement="Task_ReceiveShippingConfirmation">
+        <dc:Bounds x="850" y="67" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_18vt52q_di" bpmnElement="SequenceFlow_AutomaticOrder">
+        <di:waypoint xsi:type="dc:Point" x="625" y="107" />
+        <di:waypoint xsi:type="dc:Point" x="676" y="107" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="605.5" y="85.5" width="90" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0qiipkh_di" bpmnElement="SequenceFlow_ManualOrder">
+        <di:waypoint xsi:type="dc:Point" x="726" y="263" />
+        <di:waypoint xsi:type="dc:Point" x="726" y="147" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="732" y="245" width="19" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1t6tg9q_di" bpmnElement="SequenceFlow_ShippingReceived">
+        <di:waypoint xsi:type="dc:Point" x="950" y="107" />
+        <di:waypoint xsi:type="dc:Point" x="1062" y="107" />
+        <di:waypoint xsi:type="dc:Point" x="1062" y="248" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="961" y="85.5" width="90" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_0z3xhqv_di" bpmnElement="EndEvent_Delivered">
+        <dc:Bounds x="1220" y="270" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1215" y="309" width="47" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_186bweg_di" bpmnElement="SequenceFlow_OrderDelivered">
+        <di:waypoint xsi:type="dc:Point" x="1112" y="288" />
+        <di:waypoint xsi:type="dc:Point" x="1220" y="288" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1121" y="266.5" width="90" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_0ucsla9_di" bpmnElement="Task_ExtractMetadata">
+        <dc:Bounds x="174" y="67" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_03seygl_di" bpmnElement="UserTask_ManagementReview">
+        <dc:Bounds x="446" y="366" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_1g01px6_di" bpmnElement="UserTask_ITReview">
+        <dc:Bounds x="550" y="248" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_1dqo3dh_di" bpmnElement="UserTask_ConfirmDelivery">
+        <dc:Bounds x="1012" y="248" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="SendTask_1c36ioj_di" bpmnElement="Task_CreateOrder">
+        <dc:Bounds x="676" y="67" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BoundaryEvent_090l01c_di" bpmnElement="BoundaryEvent_ShippingError">
+        <dc:Bounds x="932" y="129" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="950" y="168" width="0" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_08w01fl_di" bpmnElement="SequenceFlow_AutomaticReject">
+        <di:waypoint xsi:type="dc:Point" x="950" y="165" />
+        <di:waypoint xsi:type="dc:Point" x="950" y="197" />
+        <di:waypoint xsi:type="dc:Point" x="900" y="197" />
+        <di:waypoint xsi:type="dc:Point" x="900" y="270" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="925" y="175.5" width="0" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="BusinessRuleTask_0s07kz7_di" bpmnElement="Task_SanityCheck">
+        <dc:Bounds x="332" y="67" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
