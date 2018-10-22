@@ -11,6 +11,13 @@ pipeline {
       }
       steps {
         sh("mvn clean install")
+        fingerprint 'target/*.war'
+        archiveArtifacts artifacts: 'target/*.war', onlyIfSuccessful: true
+      }
+      post {
+      	always {
+      	  junit '**/target/*-reports/*.xml'
+      	}
       }
     }
   }
