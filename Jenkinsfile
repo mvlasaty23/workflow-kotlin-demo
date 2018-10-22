@@ -7,7 +7,6 @@ pipeline {
         docker {
           image 'maven:3-jdk-8'
           reuseNode true
-          // TODO: add cache local dir for maven
           args '-v /tmp/.m2:/.m2'
         }
       }
